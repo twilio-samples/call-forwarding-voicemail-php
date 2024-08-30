@@ -28,7 +28,7 @@ cp -v .env.example .env
 ```
 
 After that, set values for `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`.
-You can retrieve these details from the Account Info panel of your [Twilio Console](https://console.twilio.com/) dashboard.
+You can retrieve these details from the **Account Info** panel of your [Twilio Console](https://console.twilio.com/) dashboard.
 
 ![A screenshot of the Account Info panel in the Twilio Console dashboard. It shows three fields: Account SID, Auth Token, and "My Twilio phone number", where Account SID and "My Twilio phone number" are redacted.](docs/images/twilio-console-account-info-panel.png)
 
@@ -40,6 +40,14 @@ When that's done, run the following command to launch the application:
 ```php
 composer serve
 ```
+
+Then, use ngrok to create a secure tunnel between port 8080 on your local development machine and the public internet, making the application publicly accessible, by running the following command.
+
+```php
+ngrok http 8080
+```
+
+With the application ready to go, make a call to your Twilio phone number.
 
 [slim-framework-url]: https://www.slimframework.com/
 [code-exchange-url]: https://www.twilio.com/code-exchange/call-forwarding-voicemail
