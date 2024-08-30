@@ -49,21 +49,21 @@ $app = AppFactory::create();
  */
 function duringBusinessHours(
     DateTimeImmutable $now,
-    string $dayStart,
-    string $dayEnd,
-    int $hourStart,
-    int $hourEnd
+    string            $weekStart,
+    string            $weekEnd,
+    int               $dayStart,
+    int $dayEnd
 ): bool {
-    $workWeekStart = (new DateTime($dayStart . ' this week'))->setTime($hourStart, 0);
-    $workWeekEnd = (new DateTime($dayEnd . ' this week'))->setTime($hourEnd, 0);
-    $workHourStart = (new DateTime())->setTime($hourStart, 0);
-    $workHourEnd = (new DateTime())->setTime($hourEnd, 0);
+    $workWeekStart = (new DateTime($weekStart . ' this week'))->setTime($dayStart, 0);
+    $workWeekEnd = (new DateTime($weekEnd . ' this week'))->setTime($dayEnd, 0);
+    $workDayStart = (new DateTime())->setTime($dayStart, 0);
+    $workDayEnd = (new DateTime())->setTime($dayEnd, 0);
 
     return (
         $now >= $workWeekStart
         || $now <= $workWeekEnd
-        || $now >= $workHourStart
-        || $now <= $workHourEnd
+        || $now >= $workDayStart
+        || $now <= $workDayEnd
     );
 }
 
@@ -76,8 +76,8 @@ $app->post('/', function (
         new DateTimeImmutable('now'),
         $_ENV['WORK_WEEK_START'] ?? 'Monday',
         $_ENV['WORK_WEEK_END'] ?? 'Friday',
-        $_ENV['WORK_HOUR_START'] ?? 8,
-        $_ENV['WORK_HOUR_END'] ?? 18,
+        $_ENV['WORK_DAY_START'] ?? 8,
+        $_ENV['WORK_DAY_END'] ?? 18,
     );
 
     /** @var LoggerInterface $logger */
