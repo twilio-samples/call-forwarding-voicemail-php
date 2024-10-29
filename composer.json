@@ -15,11 +15,12 @@
     ],
     "require": {
         "php": "~8.3.0",
-        "slim/slim": "^4.14",
-        "slim/psr7": "^1.7",
-        "twilio/sdk": "^8.2",
         "monolog/monolog": "^3.7",
         "php-di/slim-bridge": "^3.4",
+        "psr/clock": "^1.0",
+        "slim/psr7": "^1.7",
+        "slim/slim": "^4.14",
+        "twilio/sdk": "^8.2",
         "vlucas/phpdotenv": "^5.6"
     },
     "require-dev": {
@@ -32,12 +33,12 @@
     },
     "autoload": {
         "psr-4": {
-            "CallForwardingVoicemail\\": "src/CallForwardingVoicemail"
+            "CallForwardingVoicemail\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "CallForwardingVoicemailTest\\": "test/CallForwardingVoicemail"
+            "CallForwardingVoicemailTest\\": "test/"
         }
     },
     "config": {

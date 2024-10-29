@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace CallForwardingVoicemail\CallForwardingVoicemail;
+namespace CallForwardingVoicemail;
 
 use DateTime;
-use DateTimeImmutable;
 use Exception;
+use Psr\Clock\ClockInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -24,8 +24,10 @@ final readonly class CallForwardingHandler
     public const string VOICE_RESPONSE_TRANSCRIBE          = "true";
     public const string VOICE_RESPONSE_TRANSCRIBE_CALLBACK = "/sms";
 
-    public function __construct(private ?LoggerInterface $logger)
-    {
+    public function __construct(
+        private ClockInterface $clock,
+        private ?LoggerInterface $logger = null
+    ) {
     }
 
     /**
@@ -36,7 +38,6 @@ final readonly class CallForwardingHandler
         ResponseInterface $response,
     ): ResponseInterface {
         $isDuringBusinessHours = $this->duringBusinessHours(
-            new DateTimeImmutable('now'),
             $_ENV['WORK_WEEK_START'],
             $_ENV['WORK_WEEK_END'],
             (int) $_ENV['WORK_DAY_START'],
@@ -53,7 +54,7 @@ final readonly class CallForwardingHandler
 
         if ($isDuringBusinessHours) {
             $voiceResponse->dial($_ENV['MY_PHONE_NUMBER']);
-            $voiceResponse->say('Sorry, I was unable to redirect you. Goodbye.');
+            $voiceResponse->say('Please wait while we forward your call.');
         } else {
             $voiceResponse->record([
                 'finishOnKey'        => self::VOICE_RESPONSE_FINISH_KEY,
@@ -64,12 +65,12 @@ final readonly class CallForwardingHandler
             ]);
         }
 
-        $response->withHeader('Content-Type', 'application/xml');
-        $response
+        $newResponse = $response->withHeader('Content-Type', 'application/xml');
+        $newResponse
             ->getBody()
             ->write($voiceResponse->asXML());
 
-        return $response;
+        return $newResponse;
     }
 
     /**
@@ -78,20 +79,18 @@ final readonly class CallForwardingHandler
      * @throws Exception
      */
     private function duringBusinessHours(
-        DateTimeImmutable $now,
         string $weekStart,
         string $weekEnd,
         int $dayStart,
         int $dayEnd
     ): bool {
+        $now           = $this->clock->now();
         $workWeekStart = (new DateTime($weekStart . ' this week'))->setTime($dayStart, 0);
         $workWeekEnd   = (new DateTime($weekEnd . ' this week'))->setTime($dayEnd, 0);
-        $workDayStart  = (new DateTime())->setTime($dayStart, 0);
-        $workDayEnd    = (new DateTime())->setTime($dayEnd, 0);
+        $workDayStart  = (DateTime::createFromImmutable($now))->setTime($dayStart, 0);
+        $workDayEnd    = (DateTime::createFromImmutable($now))->setTime($dayEnd, 0);
 
-        return $now >= $workWeekStart
-            || $now <= $workWeekEnd
-            || $now >= $workDayStart
-            || $now <= $workDayEnd;
+        return ($now >= $workWeekStart && $now <= $workWeekEnd)
+                && ($now >= $workDayStart && $now <= $workDayEnd);
     }
 }
