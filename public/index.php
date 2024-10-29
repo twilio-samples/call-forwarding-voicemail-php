@@ -1,15 +1,13 @@
 <?php
 declare(strict_types=1);
 
-use CallForwardingVoicemail\CallForwardingVoicemail\{
-    CallForwardingHandler,
-    VoiceRecordingTranscriptionHandler
-};
+use Beste\Clock\SystemClock;
 use DI\Container;
+use Monolog\{Level, Logger};
 use Monolog\Handler\StreamHandler;
-use Monolog\{Level,Logger};
 use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
+use CallForwardingVoicemail\{CallForwardingHandler, CallForwardingHandlerOptions, VoiceRecordingTranscriptionHandler};
 use Twilio\Rest\Client;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -48,7 +46,18 @@ $container->set(
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-$app->post('/', new CallForwardingHandler($app->getContainer()->get(LoggerInterface::class)));
+$app->post('/', new CallForwardingHandler(
+    SystemClock::create(),
+    new CallForwardingHandlerOptions(
+        $_ENV['WORK_WEEK_START'],
+        $_ENV['WORK_WEEK_END'],
+        (int) $_ENV['WORK_DAY_START'],
+        (int) $_ENV['WORK_DAY_END'],
+    ),
+    /** @param LoggerInterface */
+    $app->getContainer()->get(LoggerInterface::class)
+));
+
 $app->post('/sms', new VoiceRecordingTranscriptionHandler(
     /** @oaram Client */
     $app->getContainer()->get(Client::class),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CallForwardingVoicemailTest;
 
 use CallForwardingVoicemail\CallForwardingHandler;
+use CallForwardingVoicemail\CallForwardingHandlerOptions;
 use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\Exception;
@@ -50,7 +51,13 @@ class CallForwardingHandlerTest extends TestCase
             ->method("now")
             ->willReturn(new DateTimeImmutable($mockClockDate));
 
-        $handler = new CallForwardingHandler($clock, $logger);
+        $options = new CallForwardingHandlerOptions(
+            $_ENV['WORK_WEEK_START'],
+            $_ENV['WORK_WEEK_END'],
+            (int) $_ENV['WORK_DAY_START'],
+            (int) $_ENV['WORK_DAY_END'],
+        );
+        $handler = new CallForwardingHandler($clock, $options, $logger);
 
         $response = $handler(
             $this->createMock(ServerRequestInterface::class),
@@ -90,7 +97,13 @@ EOF;
             ->method("now")
             ->willReturn(new DateTimeImmutable($mockClockDate));
 
-        $handler = new CallForwardingHandler($clock, $logger);
+        $options = new CallForwardingHandlerOptions(
+            $_ENV['WORK_WEEK_START'],
+            $_ENV['WORK_WEEK_END'],
+            (int) $_ENV['WORK_DAY_START'],
+            (int) $_ENV['WORK_DAY_END'],
+        );
+        $handler = new CallForwardingHandler($clock, $options, $logger);
 
         $response = $handler(
             $this->createMock(ServerRequestInterface::class),

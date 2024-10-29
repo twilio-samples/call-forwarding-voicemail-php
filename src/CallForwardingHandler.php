@@ -26,6 +26,7 @@ final readonly class CallForwardingHandler
 
     public function __construct(
         private ClockInterface $clock,
+        private CallForwardingHandlerOptions $options,
         private ?LoggerInterface $logger = null
     ) {
     }
@@ -38,10 +39,10 @@ final readonly class CallForwardingHandler
         ResponseInterface $response,
     ): ResponseInterface {
         $isDuringBusinessHours = $this->duringBusinessHours(
-            $_ENV['WORK_WEEK_START'],
-            $_ENV['WORK_WEEK_END'],
-            (int) $_ENV['WORK_DAY_START'],
-            (int) $_ENV['WORK_DAY_END'],
+            $this->options->getWorkWeekStart(),
+            $this->options->getWorkWeekEnd(),
+            $this->options->getWorkDayStart(),
+            $this->options->getWorkDayEnd(),
         );
 
         $this->logger?->info(
