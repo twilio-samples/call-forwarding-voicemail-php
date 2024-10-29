@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CallForwardingVoicemail\CallForwardingVoicemail;
+namespace CallForwardingVoicemail;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,7 +19,7 @@ final readonly class VoiceRecordingTranscriptionHandler
     public const string MESSAGE_DELIVERY_FAIL    = "Something went wrong sending the voice recording transcript.";
     public const string MESSAGE_DELIVERY_SUCCESS = "The SMS with the voice recording transcript was sent successfully.";
 
-    public function __construct(private Client $client, private ?LoggerInterface $logger)
+    public function __construct(private Client $client, private ?LoggerInterface $logger = null)
     {
     }
 
@@ -46,6 +46,7 @@ final readonly class VoiceRecordingTranscriptionHandler
                 ]
             );
 
+        /** @see https://www.twilio.com/docs/messaging/api/message-resource */
         $message = match ($sms->status) {
             'failed', 'canceled', 'undelivered' => self::MESSAGE_DELIVERY_FAIL,
             default => self::MESSAGE_DELIVERY_SUCCESS,
