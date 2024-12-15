@@ -1,5 +1,6 @@
 # Call Forwarding with Voicemail in PHP
 
+<!-- markdownlint-disable MD013 -->
 This is a small PHP app built using [the Slim Framework][slim-framework-url] that shows how to build a call forwarding app that forwards calls during a specific time window, and records voicemails if calls are unanswered or outside that time window.
 
 Find out more on [Twilio Code Exchange][code-exchange-url].
@@ -12,10 +13,10 @@ The application forwards incoming calls to a specified number during business ho
 
 To use the application, you'll need the following:
 
-- [PHP](https://www.php.net) 8.3
-- [Composer](https://getcomposer.org/) installed globally
-- A Twilio account (free or paid) with a phone number. [Click here to create one](http://www.twilio.com/referral/QlBtVJ), if you don't have already.
-- [ngrok](https://ngrok.com/)
+- [PHP][php-docs-url] 8.3
+- [Composer][composer-url] installed globally
+- A Twilio account (free or paid) with a phone number. [Click here to create one][twilio-referral-url], if you don't have already.
+- [ngrok][ngrok-url]
 - Two phone numbers; one to call the service and another to redirect your call to, if it's between business hours.
 
 ## ⚡️ Quick Start
@@ -73,7 +74,6 @@ No warranty expressed or implied. Software is as is.
 
 [issues_url]: https://github.com/settermjd/call-forwarding-voicemail-php/issues
 [pull_requests_url]: https://github.com/settermjd/call-forwarding-voicemail-php/pulls
-[twilio_referral_url]: https://www.twilio.com/referral/QlBtVJ
 [slim-framework-url]: https://www.slimframework.com/
 [code-exchange-url]: https://www.twilio.com/code-exchange/call-forwarding-voicemail
 [ngrok-url]: https://ngrok.com/
@@ -81,3 +81,4 @@ No warranty expressed or implied. Software is as is.
 [twilio-referral-url]: https://login.twilio.com/u/signup?state=hKFo2SA5Qlp2bThzaGh4T0RnUDJMU0c4VWxhZ0lYRUZrQlMxMqFur3VuaXZlcnNhbC1sb2dpbqN0aWTZIDVKUmh0dFM4ZTV0cmt2QkdKeVp6R212Z2JiMlE2U0R6o2NpZNkgTW05M1lTTDVSclpmNzdobUlKZFI3QktZYjZPOXV1cks
 [php-docs-url]: https://www.php.net
 [composer-url]: https://getcomposer.org/
+<!-- markdownlint-enable -->
